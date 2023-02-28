@@ -2,14 +2,13 @@
 set -e
 
 CURRENT_DIR=$(basename $(pwd))
-DATE_FORMATTED=$(date --utc "+%d-%m-%Y_%A")
+IS_TOMORROW=false
 TASKS=""
 
 for OPTION in "$@"; do
 	case $OPTION in
-		-t | --tommorow)
-			unset DATE_FORMATTED
-			DATE_FORMATTED=$(date --utc --date="tomorrow" "+%d-%m-%Y_%A")
+		-t | --tomorrow)
+			IS_TOMORROW=true
 			shift
 			;;
 		-a | --append)
@@ -19,6 +18,12 @@ for OPTION in "$@"; do
 			;;
 	esac
 done
+
+if [ $IS_TOMORROW = false ]; then 
+	DATE_FORMATTED=$(date --utc "+%d-%m-%Y_%A")
+else
+	DATE_FORMATTED=$(date --utc --date="tomorrow" "+%d-%m-%Y_%A")
+fi
 
 FILE_NAME="tasks_${DATE_FORMATTED}.md"
 
@@ -35,7 +40,7 @@ fi
 echo "## Tasks for ${DATE_FORMATTED/_/ (})" >> $FILE_NAME
 
 if [ -n "$TASKS" ]; then
-	echo -e "${TASKS}\n" >> $FILE_NAME
+	echo -e "${TASKS}" >> $FILE_NAME
 fi
 
 echo "Done."
