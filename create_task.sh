@@ -5,8 +5,22 @@ CURRENT_DIR=$(basename $(pwd))
 IS_TOMORROW=false
 TASKS=""
 
+display_help() {
+	echo "Usage: $0 [-h] [-t] [-a <desc>]..."
+	echo -e "\nTo append multiple tasks, use \"--append\" flag for each task."
+	echo -e "Script execution without any flags will create a template task file for today."
+	echo -e "\n Option\t\tLong Option\tMeaning"
+	echo -e " -h\t\t--help\t\tDisplay help message"
+	echo -e " -t\t\t--tomorrow\tCreate task file for tomorrow instead of today"
+	echo -e " -a <desc>\t--append\tAppend a single task description to the file\n"
+}
+
 for OPTION in "$@"; do
 	case $OPTION in
+		-h | --help)
+			display_help
+			exit 0
+			;;
 		-t | --tomorrow)
 			IS_TOMORROW=true
 			shift
@@ -44,3 +58,4 @@ if [ -n "$TASKS" ]; then
 fi
 
 echo "Done."
+exit 0
