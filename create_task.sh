@@ -24,21 +24,22 @@ display_help() {
 
 import_yesterday_tasks() {
 	if [ $IS_TOMORROW = false ]; then
-		DATE_FORMATTED_YESTERDAY=$(date --utc --date="yesterday" "+%d-%m-%Y_%A")
+		PREVIOUS_DATE_FORMATTED=$(date --utc --date="yesterday" "+%d-%m-%Y_%A")
 	else
-		DATE_FORMATTED_YESTERDAY=$(date --utc "+%d-%m-%Y_%A")
+		PREVIOUS_DATE_FORMATTED=$(date --utc "+%d-%m-%Y_%A")
 	fi
 
-	IMPORT_FILE_NAME=$(get_file_name $DATE_FORMATTED_YESTERDAY)
+	IMPORT_FILE_NAME=$(get_file_name $PREVIOUS_DATE_FORMATTED)
 
 	if [ -f $IMPORT_FILE_NAME ]; then
 		echo -e "\n### Tasks imported from yesterday:\n" >> $1
 		cat $IMPORT_FILE_NAME | grep "\[ ]" >> $1
+		echo "Imported tasks from ${PREVIOUS_DATE_FORMATTED/_/ (})."
 	else
 		echo "Cannot find yesterday task file, skipping import."
 	fi
 
-	unset DATE_FORMATTED_YESTERDAY IMPORT_FILE_NAME
+	unset PREVIOUS_DATE_FORMATTED IMPORT_FILE_NAME
 }
 
 for OPTION in "$@"; do
@@ -91,5 +92,5 @@ if [ $IS_IMPORT = true ]; then
 	import_yesterday_tasks $FILE_NAME
 fi
 
-echo "Done."
+echo "Created a new task file for ${DATE_FORMATTED/_/ (})."
 exit 0
