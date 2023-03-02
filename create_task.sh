@@ -12,13 +12,14 @@ get_file_name() {
 
 display_help() {
 	echo "Usage: $0 [-h] [-t] [-a <desc>]..."
-	echo -e "\nTo append multiple tasks, use \"--append\" flag for each task."
-	echo -e "Script execution without any flags will create a template task file for today."
+	echo -e "Notes:\tScript execution without any flags will create a template task file for today."
+	echo -e "\tTo append multiple tasks, use \"--append\" flag for each task."
+	echo -e "\t\"--import\" flag can be used along with the \"--tommorow\" flag."
 	echo -e "\n Option\t\tLong Option\tMeaning"
 	echo -e " -h\t\t--help\t\tDisplay help message"
 	echo -e " -a <desc>\t--append\tAppend a single task description to the file"
 	echo -e " -t\t\t--tomorrow\tCreate task file for tomorrow instead of today"
-	echo -e " -i\t\t--import\tImport unfinished tasks from the previous day. Can be used with flag [-t]\n"
+	echo -e " -i\t\t--import\tImport unfinished tasks from the previous day\n"
 }
 
 import_yesterday_tasks() {
