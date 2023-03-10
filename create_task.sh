@@ -51,7 +51,8 @@ import_tasks() {
 	echo -e "\n### Imported tasks:\n" >> $1
 
 	if [ $COPY_MARKED == true ]; then
-		cat $IMPORT_FILE_NAME | grep "^\[!\]" >> $1
+		cat $IMPORT_FILE_NAME | grep "^\!\[[ x]\]" >> $1
+		sed -i 's/^\!\[x\]/\![ ]/' $1
 	fi
 	cat $IMPORT_FILE_NAME | grep "^\[ \]" >> $1
 
