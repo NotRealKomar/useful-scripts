@@ -29,7 +29,7 @@ display_help() {
 	echo -e " -a <desc>\t--append\tAppend a single task description to the file"
 	echo -e " -t\t\t--tomorrow\tCreate task file for tomorrow instead of today"
 	echo -e " -i [-c]\t--import\tImport unfinished tasks from the previous day"
-	echo -e " -c\t\t--copy-marked\tIn addition to import, copy tasks marked with \"[!]\" sign\n"
+	echo -e " -c\t\t--copy-marked\tIn addition to import, copy tasks marked by an exclamation mark (\"!\")\n"
 }
 
 import_tasks() {
@@ -51,10 +51,11 @@ import_tasks() {
 	echo -e "\n### Imported tasks:\n" >> $1
 
 	if [ $COPY_MARKED == true ]; then
-		cat $IMPORT_FILE_NAME | grep "^\!\[[ x]\]" >> $1
+		cat $IMPORT_FILE_NAME | { grep "^\!\[[ x]\]" || true; } >> $1
 		sed -i 's/^\!\[x\]/\![ ]/' $1
 	fi
-	cat $IMPORT_FILE_NAME | grep "^\[ \]" >> $1
+
+	cat $IMPORT_FILE_NAME | { grep "^\[ \]" || true; } >> $1
 
 	echo -e "${INFO}[Info]${RESET} Done importing tasks from \"${IMPORT_FILE_NAME}\" file."
 
@@ -88,12 +89,12 @@ for OPTION in "$@"; do
 done
 
 if [ $CURRENT_DIR != "tasks" ]; then
-	echo -e "${ERROR}[Warning]${RESET} Cannot create a task file outside of a task folder."
+	echo -e "${ERROR}[Error]${RESET} Cannot create a task file outside of a task folder."
 	exit 1
 fi
 
 if [ $IS_IMPORT == false ] && [ $COPY_MARKED == true ]; then
-	echo -e "${ERROR}[Warning]${RESET} \"--copy-marked\" flag must be used along with \"--import\" flag."
+	echo -e "${ERROR}[Error]${RESET} \"--copy-marked\" flag must be used along with \"--import\" flag."
 	exit 1
 fi
 
@@ -106,7 +107,7 @@ fi
 FILE_NAME=$(get_file_name $DATE_FORMATTED)
 
 if [ -f $FILE_NAME ]; then
-	echo -e "${ERROR}[Warning]${RESET} Task file for ${DATE_FORMATTED/_/ (}) is already created."
+	echo -e "${ERROR}[Error]${RESET} Task file for ${DATE_FORMATTED/_/ (}) is already created."
 	exit 1
 fi
 
