@@ -10,37 +10,26 @@ RESET='\033[0m'
 
 CURRENT_DIR=$(basename $(pwd))
 IS_TOMORROW=false
-IS_IMPORT=false
+IS_IMPORT=true
 TASKS=""
 
-get_file_name() {
-	echo "tasks_$1.md"
-}
-
 display_help() {
-	echo -e "${INFO}Usage:${RESET}\t$0 [-h] [-t] [-i] [-a <desc>]..."
-	echo -e "${INFO}Notes:${RESET}\t- Script execution without any flags will create a template task file for today."
-	echo -e "\t- To append multiple tasks, use \"--append\" flag for each task."
-	echo -e "\t- \"--import\" flag can be used along with the \"--tommorow\" flag."
-	echo -e "\t- Tasks marked with an exclamation mark (\"!\") will be imported regardless of completion."
+	echo -e "${INFO}Usage:${RESET}\t$0 [-h] [-t] [-n] [-a <desc>]..."
+	echo -e "${INFO}Notes:${RESET}\t* Script execution without any flags will create a template\n\t  task file for today and ${WARNING}import last created tasks${RESET}."
+	echo -e "\t* To append multiple tasks, use \"--append\" flag for each task."
+	echo -e "\t* Tasks marked with an exclamation mark (\"!\") will be imported\n\t  regardless of completion."
 	echo -e "\n ${INFO}Option\t\tLong Option\tMeaning${RESET}"
-	echo -e " -h\t\t--help\t\tDisplay help message"
-	echo -e " -a <desc>\t--append\tAppend a single task description to the file"
-	echo -e " -t\t\t--tomorrow\tCreate task file for tomorrow instead of today"
-	echo -e " -i\t\t--import\tImport unfinished and marked tasks from the previous day"
+	echo -e " -h\t\t--help\t\tDisplay the help message;"
+	echo -e " -a <desc>\t--append\tAppend a single task description to the file;"
+	echo -e " -t\t\t--tomorrow\tCreate a task file for tomorrow instead of today;"
+	echo -e " -n\t\t--no-import\tDisable import of unfinished and marked tasks from the previous day."
 }
 
 import_tasks() {
-	if [ $IS_TOMORROW = false ]; then
-		PREVIOUS_DATE_FORMATTED=$(date --utc --date="yesterday" "+%d-%m-%Y_%A")
-	else
-		PREVIOUS_DATE_FORMATTED=$(date --utc "+%d-%m-%Y_%A")
-	fi
+	IMPORT_FILE_NAME=$(ls -t1 | grep "^tasks_" | sed -n "2p")
 
-	IMPORT_FILE_NAME=$(get_file_name $PREVIOUS_DATE_FORMATTED)
-
-	if [ ! -f $IMPORT_FILE_NAME ]; then
-		echo -e "${WARNING}[Warning]${RESET} Cannot find the task file from yesterday, skip import."
+	if [[( ! -f $IMPORT_FILE_NAME ) || ( $IMPORT_FILE_NAME == $1 )]]; then
+		echo -e "${WARNING}[Warning]${RESET} Cannot find the last created task file, skip import."
 		return 0
 	fi
 
@@ -57,7 +46,7 @@ import_tasks() {
 
 	echo -e "${INFO}[Info]${RESET} Done importing tasks from \"${IMPORT_FILE_NAME}\" file."
 
-	unset PREVIOUS_DATE_FORMATTED IMPORT_FILE_NAME
+	unset IMPORT_FILE_NAME
 }
 
 for OPTION in "$@"; do
@@ -75,8 +64,8 @@ for OPTION in "$@"; do
 			shift
 			shift
 			;;
-		-i | --import)
-			IS_IMPORT=true
+		-n | --no-import)
+			IS_IMPORT=false
 			shift
 			;;
 	esac
@@ -93,7 +82,7 @@ else
 	DATE_FORMATTED=$(date --utc --date="tomorrow" "+%d-%m-%Y_%A")
 fi
 
-FILE_NAME=$(get_file_name $DATE_FORMATTED)
+FILE_NAME="tasks_${DATE_FORMATTED}.md"
 
 if [ -f $FILE_NAME ]; then
 	echo -e "${ERROR}[Error]${RESET} Task file for ${DATE_FORMATTED/_/ (}) is already created."
