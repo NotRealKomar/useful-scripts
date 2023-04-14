@@ -91,7 +91,7 @@ fi
 
 echo "## Tasks for ${DATE_FORMATTED/_/ (})" >> $FILE_NAME
 
-echo -e "${INFO}[Info]${RESET} Created a new task file for ${DATE_FORMATTED/_/ (})."
+echo -e "${INFO}[Info]${RESET} Created \"${FILE_NAME}\" file."
 
 if [ -n "$TASKS" ]; then
 	echo -e "${INFO}[Info]${RESET} Append tasks to the created file..."
