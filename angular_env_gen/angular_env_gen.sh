@@ -47,9 +47,12 @@ convert_parameters_from_file() {
 }
 
 load_dot_env() {
-  if [ -f $2 ]; then
-    convert_parameters_to_file $ENV_FILE_PATH
+  if [ ! -f $ENV_FILE_PATH ]; then
+    echo "[Error]: Env file not found"
+    exit 1
   fi
+
+  convert_parameters_from_file $ENV_FILE_PATH
 }
 
 load_from_system() {

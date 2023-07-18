@@ -1,6 +1,7 @@
-
-## NOTES:
-After adding the script, don't forget to update your angular.json file with the following lines (replace paths with your own):
+## REQUIREMENTS:
+* .env file must end with a newline;
+* Add the generated file (**environment.generated.ts** by default) to **.gitignore**;
+* Update your **angular.json** file with the following lines (replace paths with your own):
 ```json
 "architect": {
   ...
@@ -15,6 +16,5 @@ After adding the script, don't forget to update your angular.json file with the 
   }
 }
 ```
-And add the generated file to .gitignore
 
-### TODO
+## ///TODO///
