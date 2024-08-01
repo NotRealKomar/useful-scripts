@@ -6,7 +6,7 @@ Bunch of scripts that can be useful in some cases
 
 1. Add execution permissions to script of your choice
 ```bash
-chmod +x ./script_name.sh
+chmod u+x ./script_name.sh
 ```
 
 2. (OPTIONAL) Create a symbolic link to the script
